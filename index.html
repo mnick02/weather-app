@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Enter City...">
+        <button id="search-btn">Search</button>
+        <div id="data"></div>
+    </div>
+    <script>
+        /*fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/seattle?key=WN35YQJQT7PBM9BPP2TQMFB24", {mode: "cors"})
+            .then(function(response) {
+                return response.json();
+            })
+            .then(function(response) {
+                console.log(response.currentConditions);
+            });*/
+        const searchInput = document.getElementById("search-input");
+        const searchBtn = document.getElementById("search-btn");
+        const data = document.getElementById("data");
+
+        const API_KEY = "WN35YQJQT7PBM9BPP2TQMFB24";
+
+        let searchTerm = "seattle";
+
+        function fetchWeather(searchQuery) {
+            fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${searchQuery}?key=${API_KEY}`, {mode: "cors"})
+                .then(function(response) {
+                    return response.json();
+                })
+                .then(function(response) {
+                    console.log(response);
+
+                    const details = [
+                        { label: "Feels Like: ", value: `${response.currentConditions.feelslike}` },
+                        { label: "Conditions: ", value: `${response.currentConditions.conditions}` }
+                    ];
+
+
+
+                    //data.textContent = response.currentConditions.feelslike;
+                    //Change up add more to display all good data
+
+                    details.forEach(detail => {
+                        const detailItem = document.createElement("div");
+
+                        const detailLabel = document.createElement("span");
+                        detailLabel.textContent = detail.label;
+
+                        const detailValue = document.createElement("span");
+                        detailValue.textContent = detail.value;
+
+                        detailItem.appendChild(detailLabel);
+                        detailItem.appendChild(detailValue);
+                        data.appendChild(detailItem);
+                    })
+                });
+        }
+
+        fetchWeather(searchTerm);
+
+        searchBtn.addEventListener("click", function() {
+            data.textContent = "";
+            searchTerm = searchInput.value.trim() || "seattle";
+            fetchWeather(searchTerm);
+        });
+
+
+        
+    </script>
+</body>
+</html>
