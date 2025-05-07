@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="search-container">
@@ -22,10 +23,33 @@
         const searchInput = document.getElementById("search-input");
         const searchBtn = document.getElementById("search-btn");
         const data = document.getElementById("data");
+        const body = document.body;
 
         const API_KEY = "WN35YQJQT7PBM9BPP2TQMFB24";
 
         let searchTerm = "seattle";
+
+        function setBgColor(feelsLike) {
+            if (feelsLike >= 90) {
+                body.style.backgroundColor = "#ff5722";
+            }
+            else if (feelsLike >= 75) {
+                body.style.backgroundColor = "#ffcc80";
+            }
+            else if (feelsLike >= 65) {
+                body.style.backgroundColor ="#a5d6a7";
+            }
+            else if (feelsLike >= 50) {
+                body.style.backgroundColor = "#81d4fa";
+            }
+            else if (feelsLike >= 32) {
+                body.style.backgroundColor = "#b3e5fc";
+            }
+            else {
+                body.style.backgroundColor = "#e1f5fe";
+            }
+        }
+
 
         function fetchWeather(searchQuery) {
             fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${searchQuery}?key=${API_KEY}`, {mode: "cors"})
@@ -34,10 +58,14 @@
                 })
                 .then(function(response) {
                     console.log(response);
+                    setBgColor(response.currentConditions.feelslike);
 
                     const details = [
-                        { label: "Feels Like: ", value: `${response.currentConditions.feelslike}` },
-                        { label: "Conditions: ", value: `${response.currentConditions.conditions}` }
+                        { label: "Location: ", value: `${response.address}` },
+                        { label: "Feels Like: ", value: `${response.currentConditions.feelslike}°F` },
+                        { label: "Conditions: ", value: `${response.currentConditions.conditions}` },
+                        { label: "Time: ", value: `${response.currentConditions.datetime}` },
+                        { label: "Humidity: ", value: `${response.currentConditions.humidity}` }
                     ];
 
 
@@ -64,6 +92,7 @@
         fetchWeather(searchTerm);
 
         searchBtn.addEventListener("click", function() {
+            body.style.backgroundColor = "";
             data.textContent = "";
             searchTerm = searchInput.value.trim() || "seattle";
             fetchWeather(searchTerm);
