@@ -11,6 +11,8 @@
         <input type="text" id="search-input" placeholder="Enter City...">
         <button id="search-btn">Search</button>
         <div id="data"></div>
+
+        <img src="#">
     </div>
     <script>
         /*fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/seattle?key=WN35YQJQT7PBM9BPP2TQMFB24", {mode: "cors"})
@@ -24,6 +26,7 @@
         const searchBtn = document.getElementById("search-btn");
         const data = document.getElementById("data");
         const body = document.body;
+        const img = document.querySelector("img");
 
         const API_KEY = "WN35YQJQT7PBM9BPP2TQMFB24";
 
@@ -32,6 +35,7 @@
         function setBgColor(feelsLike) {
             if (feelsLike >= 90) {
                 body.style.backgroundColor = "#ff5722";
+                //add icons?
             }
             else if (feelsLike >= 75) {
                 body.style.backgroundColor = "#ffcc80";
@@ -50,6 +54,26 @@
             }
         }
 
+        function setImage(condition) {
+            const firstCondition = condition.split(",")[0].trim();
+
+            if (firstCondition == "Rain") {
+                img.src = "./cloud-drizzle.svg";
+            }
+            else if (firstCondition == "Clear") {
+                img.src = "./sun.svg";
+            }
+            else if (firstCondition == "Partially cloudy") {
+                img.src = "./partial.png";
+            }
+            else if (firstCondition == "Snow") {
+                img.src = "./cloud-snow.svg"
+            }
+            else if (firstCondition == "Overcast") {
+                img.src = "./partial.png";
+            }
+        }
+
 
         function fetchWeather(searchQuery) {
             fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${searchQuery}?key=${API_KEY}`, {mode: "cors"})
@@ -59,6 +83,7 @@
                 .then(function(response) {
                     console.log(response);
                     setBgColor(response.currentConditions.feelslike);
+                    setImage(response.currentConditions.conditions);
 
                     const details = [
                         { label: "Location: ", value: `${response.address}` },
@@ -93,11 +118,11 @@
 
         searchBtn.addEventListener("click", function() {
             body.style.backgroundColor = "";
+            img.src = "";
             data.textContent = "";
             searchTerm = searchInput.value.trim() || "seattle";
             fetchWeather(searchTerm);
         });
-
 
         
     </script>
